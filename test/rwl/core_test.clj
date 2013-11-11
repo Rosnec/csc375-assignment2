@@ -88,8 +88,8 @@
 (deftest DSL-test
   (testing "Testing DSL for consistency"
     (rwl-consistency-test rwl.locks.double-semaphore-lock/dsl))
-  (doseq [readers [10 100 1000 10000]
-          writers [10 100 1000 10000]]
+  (doseq [readers [10 100 1000 10000 1000000]
+          writers [10 100 1000 10000 1000000]]
     (testing (str "Stress testing DSL with "
                   readers " readers and "
                   writers " writers."))
