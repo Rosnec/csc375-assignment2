@@ -61,7 +61,6 @@
                                             ; and doesn't return anything as a
                                             ; result
    (dorun (pmap (fn [x] (is (= ((rwl :read) x) (* 2 x)))) data))
-   (println (count (rwl :read)))
    (is (= (count (rwl :read)) (count data)))))
 ;   (println "testvalue: " (count (rwl :read)))))
 
