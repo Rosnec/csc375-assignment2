@@ -36,7 +36,10 @@
                (.await held-latch)
                (if (locking writer-latch
                      (if (= held-latch @writer-latch)
-                       (.tryAcquire reader-P)))
+                       (.tryAcquire reader-P)
+                       (if (and (< (.availablePermits reader-P) permits)
+                                (zero? @waiting-writers))
+                         (.tryAcquire reader-P))))
                ; acquired a permit
                  (let [deref-x @atomic-x]
                    (.release reader-P)
