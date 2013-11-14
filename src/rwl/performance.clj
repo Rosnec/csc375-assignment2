@@ -33,11 +33,11 @@
     (let [timed-read-fn (nano-time read-fn)
           rw-count (+ readers writers)
           rw-seq (shuffle (concat (take readers
-                                         [(-> read-fn nano-time repeat)
-                                          :read])
-                                   (take writers
-                                         [(-> write-fn nano-time repeat)
-                                          :write])))
+                                        [(-> read-fn nano-time repeat)
+                                         :read])
+                                  (take writers
+                                        [(-> write-fn nano-time repeat)
+                                         :write])))
 ;          rw-seq (for [[time _] rw-data] time)
 ;          rw-seq (shuffle (concat (take readers
                                   ;;       (-> read-fn nano-time repeat))

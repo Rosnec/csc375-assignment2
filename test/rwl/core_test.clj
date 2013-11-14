@@ -1,7 +1,5 @@
 (ns rwl.core-test
   (:use clojure.test
-;        rwl.core
-;        rwl.locks.optimistic-read-lock
         rwl.locks.reentrant-rwl
         rwl.locks.double-semaphore-lock)
   (:import [java.util.concurrent Executors]))
@@ -78,7 +76,6 @@
     (dorun (pmap #(% %2) readers-writers data))
     (await counter)
     (is (= @counter writers))))
-                      
 
 ;(deftest RRWL-test
 ;  (testing "Testing RRWL"
@@ -93,3 +90,7 @@
                   readers " readers and "
                   writers " writers."))
     (rwl-stress-test rwl.locks.double-semaphore-lock/dsl readers writers)))
+
+(deftest array-test
+  (testing "Testing on Array datatype"
+    ))
