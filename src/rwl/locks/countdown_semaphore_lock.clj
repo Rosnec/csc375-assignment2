@@ -5,9 +5,9 @@
 (defn CSL
   ""
   ([x]
-     (dsl x 1000000 false))
+     (CSL x 1000000 false))
   ([x permits]
-     (dsl x permits false))
+     (CSL x permits false))
   ([x permits fair?]
      (let [atomic-x (atom x)
            reader-P (new Semaphore permits fair?) ; reader permits

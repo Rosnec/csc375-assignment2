@@ -1,8 +1,8 @@
 (ns rwl.core
-  (:require rwl.locks.smart-lock)
+  (:require [rwl.star-flight-3d :refer [throughput-tests]])
   (:gen-class))
 
 (defn -main
   "I don't do a whole lot."
-  [& args]
-  (println "Hello, World!"))
+  [outdir]
+  (throughput-tests outdir))

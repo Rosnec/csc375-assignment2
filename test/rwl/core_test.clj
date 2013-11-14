@@ -90,7 +90,3 @@
                   readers " readers and "
                   writers " writers."))
     (rwl-stress-test rwl.locks.double-semaphore-lock/dsl readers writers)))
-
-(deftest array-test
-  (testing "Testing on Array datatype"
-    ))
