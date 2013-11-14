@@ -75,17 +75,19 @@
       (let [throughput (incanter.core/to-dataset
                          (concat (get-throughput CSL :CSL num-players)
                                  (get-throughput RRWL :RRWL num-players)))]
+        (println "Saving plot for" num-players "players")
         (incanter.core/save (incanter.charts/line-chart
-                                :portion  :throughput
-                                :data     throughput
-                                :group-by :type
-                                :title    (str num-players " players")
-                                :x-label  "% Readers"
-                                :y-label  "Operations/ms"
-                                :legend   true)
-                              (new java.io.File outdir
-                                                (str "throughput-"
-                                                     num-players
-                                                     "-players.png")))))))
-                                                     
+                               :portion  :throughput
+                               :data     throughput
+                               :group-by :type
+                               :title    (str num-players " players")
+                               :x-label  "% Readers"
+                               :y-label  "Operations/ms"
+                               :legend   true)
+                            (new java.io.File outdir
+                                 (str "throughput-"
+                                      num-players
+                                      "-players.png")))
+        (println "Saved plot for" num-players "players")))))
+
 ; Figure out how to put this all in an incanter dataset
