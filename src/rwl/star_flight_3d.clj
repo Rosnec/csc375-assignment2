@@ -63,6 +63,7 @@
   "Does a series of throughput tests on both CSL and RRWL, and outputs the
   results as a series of plots."
   [outdir]
+  (println "lets do sum tests here...")
   (let [get-throughput (fn [rwl kw num-players]
                          (for [read-portion (range 0 1 0.01)]
                            {:portion read-portion,
@@ -71,7 +72,9 @@
                                                               rwl
                                                               5000000000)
                             :type kw}))]
+    (println "'bout to do one of those for loops I've heard so much about")
     (for [num-players (take 8 (util/powers-of 2))]
+      (println "there are" num-players "players")
       (let [throughput (incanter.core/to-dataset
                          (concat (get-throughput CSL :CSL num-players)
                                  (get-throughput RRWL :RRWL num-players)))]
