@@ -1,7 +1,8 @@
 (ns rwl.core-test
+  {:author "Dan Wysocki"}
   (:use clojure.test
         rwl.locks.reentrant-rwl
-        rwl.locks.double-semaphore-lock)
+        rwl.locks.countdown-semaphore-lock)
   (:import [java.util.concurrent Executors]))
 
 ;; (deftest orl-test
@@ -77,16 +78,16 @@
     (await counter)
     (is (= @counter writers))))
 
-;(deftest RRWL-test
-;  (testing "Testing RRWL"
-;    (rwl-test rwl.locks.reentrant-rwl/RRWL)))
+(deftest RRWL-test
+  (testing "Testing RRWL"
+    (rwl-consistency-test rwl.locks.reentrant-rwl/RRWL)))
 
-(deftest DSL-test
+(deftest CSL-test
   (testing "Testing DSL for consistency"
-    (rwl-consistency-test rwl.locks.double-semaphore-lock/dsl))
+    (rwl-consistency-test rwl.locks.countdown-semaphore-lock/CSL))
   (doseq [readers [10 100 1000 10000]
           writers [10 100 1000 10000]]
-    (testing (str "Stress testing DSL with "
+    (testing (str "Stress testing CSL with "
                   readers " readers and "
                   writers " writers."))
-    (rwl-stress-test rwl.locks.double-semaphore-lock/dsl readers writers)))
+    (rwl-stress-test rwl.locks.countdown-semaphore-lock/CSL readers writers)))

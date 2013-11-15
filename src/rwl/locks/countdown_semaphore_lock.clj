@@ -1,11 +1,12 @@
 (ns rwl.locks.countdown-semaphore-lock
+  {:author "Dan Wysocki"}
   (:require [rwl.locks.interfaces :refer [general-rwl]])
   (:import [java.util.concurrent Semaphore CountDownLatch]))
 
 (defn CSL
   ""
   ([x]
-     (CSL x 1000000 false))
+     (CSL x 100000 false))
   ([x permits]
      (CSL x permits false))
   ([x permits fair?]
@@ -46,7 +47,7 @@
                    (.release reader-P)
                    deref-x)
                ; did not acquire a permit
-                 (recur active-latch))))]
+                 (recur active-latch)))))]
        (general-rwl read-fn write-fn))))
                    
                

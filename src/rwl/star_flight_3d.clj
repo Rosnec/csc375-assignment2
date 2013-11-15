@@ -8,6 +8,7 @@
   collision detection, and so threads simply move their player, or take a
   snapshot of the map at a given time. The percentage of the time that each
   event happens is fixed for a full set of tests, and then incremented."
+  {:author "Dan Wysocki"}
   (:require [incanter core charts stats]
             [rwl.performance :as performance]
             [rwl.util :as util]

@@ -1,4 +1,5 @@
 (ns rwl.util
+  {:author "Dan Wysocki"}
   (:import [java.util.concurrent Executors]))
 
 (defn powers-of
