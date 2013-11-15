@@ -3,10 +3,15 @@
   (:import [java.util.concurrent Executors]))
 
 (defn powers-of
-  "Returns an infinite lazy sequence of the powers of n
+  "Returns an infinite lazy sequence of the powers of n, beginning with start,
+  unless the number of iterations is specified.
   Taken from http://stackoverflow.com/a/13066466/890705"
-  [n]
-  (iterate (partial *' n) n))
+  ([n]
+     (powers-of n n))
+  ([n start]
+     (iterate (partial *' n) start))
+  ([n start iterations]
+     (take iterations (powers-of n start))))
 
 (defn prob-general
   "This is the good, generalized version of prob, but I need to get this working

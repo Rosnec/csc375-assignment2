@@ -1,9 +1,11 @@
-(defproject rwl "0.2.0"
+(defproject csc375-assignment2 "0.3.0"
   :description "A readers-writer locking mechanism library and performance
-                testing suite"
-  :url "http://example.com/FIXME"
+                testing suite. Implements an original lock, called a
+                countdown-semaphore-lock, and compares its performance to
+                java.util.concurrent's ReentrantReadWriteLock."
+  :url "https://github.com/Rosnec/csc375-assignment2"
   :license {:name "GNU General Public License"
-            :url "Eclipse Public License"}
+            :url "GNU General Public License"}
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [incanter "1.5.4"]]
   :main rwl.core

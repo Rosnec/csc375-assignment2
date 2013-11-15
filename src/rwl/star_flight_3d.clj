@@ -62,30 +62,32 @@
 (defn throughput-tests
   "Does a series of throughput tests on both CSL and RRWL, and outputs the
   results as a series of plots."
-  [outdir]
-  (println "Doing throughput tests... (this may take a while)")
-  (let [get-throughput (fn [rwl kw num-players]
-                         (for [read-portion (range 0 1 0.01)]
-                           {:portion read-portion,
-                            :throughput (play-game-throughput num-players
-                                                              read-portion
-                                                              rwl
-                                                              5000000000)
-                            :type kw}))]
-    (doseq [num-players (take 8 (util/powers-of 2))]
-      (let [throughput (incanter.core/to-dataset
-                         (concat (get-throughput CSL :CSL num-players)
-                                 (get-throughput RRWL :RRWL num-players)))]
-        (incanter.core/save (incanter.charts/line-chart
-                               :portion  :throughput
-                               :data     throughput
-                               :group-by :type
-                               :title    (str num-players " players")
-                               :x-label  "% Readers"
-                               :y-label  "Operations/ms"
-                               :legend   true)
-                            (new java.io.File outdir
-                                 (str "throughput-"
-                                      num-players
-                                      "-players.png")))))
-    (println "Done")))
+  ([outdir]
+     (throughput-tests 2 8 0.01))
+  ([outdir start iterations portion-step]
+     (println "Doing throughput tests... (this may take a while)")
+     (let [get-throughput (fn [rwl kw num-players]
+                            (for [read-portion (range 0 1 portion-step)]
+                              {:portion read-portion,
+                               :throughput (play-game-throughput num-players
+                                                                 read-portion
+                                                                 rwl
+                                                                 5000000000)
+                               :type kw}))]
+       (doseq [num-players (util/powers-of 2 start iterations)]
+         (let [throughput (incanter.core/to-dataset
+                            (concat (get-throughput CSL  :CSL  num-players)
+                                    (get-throughput RRWL :RRWL num-players)))]
+           (incanter.core/save (incanter.charts/line-chart
+                                 :portion  :throughput
+                                 :data     throughput
+                                 :group-by :type
+                                 :title    (str num-players " players")
+                                 :x-label  "% Readers"
+                                 :y-label  "Operations/ms"
+                                 :legend   true)
+                               (new java.io.File outdir
+                                    (str "throughput-"
+                                         num-players
+                                         "-players.png")))))
+       (println "Done"))))

@@ -1,8 +1,15 @@
 (ns rwl.core
+  {:author "Dan Wysocki"}
   (:require [rwl.star-flight-3d :refer [throughput-tests]])
   (:gen-class))
 
 (defn -main
-  "I don't do a whole lot."
-  [outdir]
-  (throughput-tests outdir))
+  "Runs throughput tests and outputs to the command-line argument -- outdir"
+  ([outdir]
+     (throughput-tests outdir 2 9 0.01))
+     (-main outdir 2 9))
+  ([outdir start]
+     (throughput-tests outdir start 9 0.01))
+  ([outdir start iterations]
+     (throughput-tests outdir start iterations 0.01))
+
