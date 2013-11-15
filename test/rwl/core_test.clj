@@ -91,3 +91,7 @@
                   readers " readers and "
                   writers " writers."))
     (rwl-stress-test rwl.locks.countdown-semaphore-lock/CSL readers writers)))
+
+(deftest CSL-RRWL-test
+  (testing "Tests validity of CSL using a RRWL"
+    (let [
