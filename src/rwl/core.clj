@@ -12,7 +12,7 @@
   ([outdir start iterations]
      (-main outdir start iterations 0.01))
   ([outdir start iterations portion-step]
-     (-main outdir (Integer. start)
-                   (Integer. iterations)
-                   (Double. portion-step))))
+     (throughput-tests outdir (Integer. start)
+                              (Integer. iterations)
+                              (Double. portion-step))))
 
