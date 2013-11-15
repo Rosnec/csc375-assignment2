@@ -10,7 +10,6 @@
   event happens is fixed for a full set of tests, and then incremented."
   {:author "Dan Wysocki"}
   (:require [incanter core charts stats]
-            [rwl.performance :as performance]
             [rwl.util :as util]
             [rwl.locks.countdown-semaphore-lock :refer [CSL]]
             [rwl.locks.reentrant-rwl :refer [RRWL]])
