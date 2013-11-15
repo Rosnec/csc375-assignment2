@@ -8,12 +8,11 @@
   ([outdir]
      (throughput-tests outdir 2 9 0.01))
   ([outdir start]
-     (main- outdir start 9 0.01))
+     (-main outdir start 9 0.01))
   ([outdir start iterations]
-     (main- outdir start iterations 0.01))
+     (-main outdir start iterations 0.01))
   ([outdir start iterations portion-step]
-     (main- outdir (Integer. start)
+     (-main outdir (Integer. start)
                    (Integer. iterations)
                    (Double. portion-step))))
-
 
