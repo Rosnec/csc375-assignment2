@@ -72,3 +72,4 @@ data)))]
 (to-dataset (concat [{:a 1 :b 2} {:a 5 :b 4}] [{:a 2 :b 10}]))
 (doc save)
 java.io.File
+(doc doseq)

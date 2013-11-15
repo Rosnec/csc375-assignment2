@@ -73,7 +73,7 @@
                                                               5000000000)
                             :type kw}))]
     (println "'bout to do one of those for loops I've heard so much about")
-    (for [num-players (take 8 (util/powers-of 2))]
+    (doseq [num-players (take 8 (util/powers-of 2))]
     (do (println "there are" num-players "players")
       (let [throughput (incanter.core/to-dataset
                          (concat (get-throughput CSL :CSL num-players)
@@ -92,5 +92,3 @@
                                       num-players
                                       "-players.png")))
         (println "Saved plot for" num-players "players"))))))
-
-; Figure out how to put this all in an incanter dataset
