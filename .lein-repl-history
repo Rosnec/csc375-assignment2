@@ -73,3 +73,4 @@ data)))]
 (doc save)
 java.io.File
 (doc doseq)
+(type :a)
