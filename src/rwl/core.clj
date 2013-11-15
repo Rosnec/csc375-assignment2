@@ -10,6 +10,10 @@
   ([outdir start]
      (throughput-tests outdir start 9 0.01))
   ([outdir start iterations]
-     (throughput-tests outdir start iterations 0.01)))
+     (throughput-tests outdir start iterations 0.01))
+  ([outdir start iterations portion-step]
+     (throughput-tests outdir (Integer. start)
+                              (Integer. iterations)
+                              (Double. portion-step))))
 
 
