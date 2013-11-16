@@ -1,10 +1,13 @@
 (ns rwl.core
   {:author "Dan Wysocki"}
-  (:require [rwl.star-flight-3d :refer [throughput-tests]])
+  (:require [rwl.star-flight-3d :refer [throughput-tests]]
+            [rwl.locks.reentrant-rwl :refer [RRWL-aarray]])
   (:gen-class))
 
 (defn -main
   "Runs throughput tests and outputs to the command-line argument -- outdir"
+  ([]
+     (println (RRWL-aarray Integer 10)))
   ([outdir]
      (throughput-tests outdir 2 9 0.01))
   ([outdir start]

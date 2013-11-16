@@ -52,9 +52,9 @@
   (atomic-rwl CSL x))
 
 (defn CSL-array
-  [args]
+  [& args]
   (apply array-rwl CSL args))
 
 (defn CSL-aarray
-  [args]
+  [& args]
   (apply aarray-rwl CSL args))

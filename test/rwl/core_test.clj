@@ -1,8 +1,9 @@
 (ns rwl.core-test
   {:author "Dan Wysocki"}
-  (:use clojure.test
-        rwl.locks.reentrant-rwl
-        rwl.locks.countdown-semaphore-lock)
+  (:use clojure.test)
+  (:require [rwl.locks.reentrant-rwl :refer [RRWL-atomic RRWL-aarray]]
+            [rwl.locks.countdown-semaphore-lock :refer [CSL-atomic CSL-aarray]]
+            [rwl.util :refer [dopool powers-of]])
   (:import [java.util.concurrent Executors]))
 
 ;; (deftest orl-test
@@ -78,14 +79,19 @@
     (await counter)
     (is (= @counter writers))))
 
-(defn rwl-array-test
+(defn rwl-aarray-test
   "Tries filling an array of length N with (range N) by appending the values
   concurrently. The order is not necessarily preserved, but the elements should
   be, so to test it, we sum the elements, and see if it is equal to
   (apply + (range length))."
-  [arr-rwl length threads]
-  (let [rwl (arr-rwl int length)
-        data (partition-all threads (range length))
+  [aarr-rwl length threads]
+  (let [rwl (aarr-rwl Integer length)
+        data (range length)]
+    (println "RWL:" rwl)
+    (dopool #(rwl :write :append %) data threads)
+    (is (= (apply +' data)
+           (apply +' (for [idx data]
+                       (rwl :read idx)))))))
 
 (deftest RRWL-test
   (testing "Testing RRWL"
@@ -99,7 +105,16 @@
     (testing (str "Stress testing CSL-atomic with "
                   readers " readers and "
                   writers " writers."))
-    (rwl-stress-test rwl.locks.countdown-semaphore-lock/CSL-atomic readers writers)))
+    (rwl-stress-test rwl.locks.countdown-semaphore-lock/CSL-atomic
+                     readers writers)))
+
+(deftest aarray-test
+  (testing "Testing RRWL and CSL on an AArray"
+    (doseq [rwl-fn [RRWL-aarray CSL-aarray]]
+      (println "RWL-FN:" rwl-fn)
+      (let [rwl (rwl-fn Integer 10000)]
+        (doseq [threads (powers-of 2 2 9)]
+          (rwl-aarray-test rwl-fn 10000 threads))))))
 
 ;(deftest CSL-atomic-RRWL-test
 ;  (testing "Tests validity of CSL-atomic using a RRWL"

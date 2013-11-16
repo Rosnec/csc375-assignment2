@@ -40,11 +40,11 @@
   (atomic-rwl RRWL x))
 
 (defn RRWL-array
-  [args]
+  [& args]
   (apply array-rwl RRWL args))
 
 (defn RRWL-aarray
-  [args]
+  [& args]
   (apply aarray-rwl RRWL args))
 
 ;; (defn RRWL-array
