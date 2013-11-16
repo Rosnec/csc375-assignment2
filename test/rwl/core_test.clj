@@ -80,7 +80,7 @@
 
 (deftest RRWL-test
   (testing "Testing RRWL"
-    (rwl-consistency-test rwl.locks.reentrant-rwl/RRWL)))
+    (rwl-consistency-test rwl.locks.reentrant-rwl/RRWL-atomic)))
 
 (deftest CSL-test
   (testing "Testing DSL for consistency"
@@ -92,6 +92,6 @@
                   writers " writers."))
     (rwl-stress-test rwl.locks.countdown-semaphore-lock/CSL readers writers)))
 
-(deftest CSL-RRWL-test
-  (testing "Tests validity of CSL using a RRWL"
-    (let [
+;(deftest CSL-RRWL-test
+;  (testing "Tests validity of CSL using a RRWL"
+

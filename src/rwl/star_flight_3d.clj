@@ -12,7 +12,7 @@
   (:require [incanter core charts stats]
             [rwl.util :as util]
             [rwl.locks.countdown-semaphore-lock :refer [CSL]]
-            [rwl.locks.reentrant-rwl :refer [RRWL]])
+            [rwl.locks.reentrant-rwl :refer [RRWL-atomic]])
   (:import [java.util.concurrent CountDownLatch]))
 
 (defn play-game
@@ -57,7 +57,7 @@
 (defmacro play-game-throughput-RRWL
   "Tests throughput using a countdown-semaphore-lock"
   [num-players read-portion ^java.lang.Long time-ns]
-  `(play-game-throughput num-players read-portion RRWL time-ns))
+  `(play-game-throughput num-players read-portion RRWL-atomic time-ns))
 
 (defn throughput-tests
   "Does a series of throughput tests on both CSL and RRWL, and outputs the
@@ -77,7 +77,7 @@
        (doseq [num-players (util/powers-of 2 start iterations)]
          (let [throughput (incanter.core/to-dataset
                             (concat (get-throughput CSL  :CSL  num-players)
-                                    (get-throughput RRWL :RRWL num-players)))]
+                                    (get-throughput RRWL-atomic :RRWL num-players)))]
            (incanter.core/save (incanter.charts/line-chart
                                  :portion  :throughput
                                  :data     throughput
