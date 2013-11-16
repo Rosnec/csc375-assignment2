@@ -64,8 +64,8 @@
 ;   (println "testvalue: " (count (rwl :read)))))
 
 (defn rwl-stress-test
-  [lock-fn readers writers]
-  (let [rwl (lock-fn {})
+  [rwl readers writers]
+  (let [rwl (rwl {})
         counter (agent 0)
         total (+ readers writers)
         read-fn  (fn [x] (is (or (= ((rwl :read) x) x)
@@ -78,20 +78,29 @@
     (await counter)
     (is (= @counter writers))))
 
+(defn rwl-array-test
+  "Tries filling an array of length N with (range N) by appending the values
+  concurrently. The order is not necessarily preserved, but the elements should
+  be, so to test it, we sum the elements, and see if it is equal to
+  (apply + (range length))."
+  [arr-rwl length threads]
+  (let [rwl (arr-rwl int length)
+        data (partition-all threads (range length))
+
 (deftest RRWL-test
   (testing "Testing RRWL"
     (rwl-consistency-test rwl.locks.reentrant-rwl/RRWL-atomic)))
 
-(deftest CSL-test
-  (testing "Testing DSL for consistency"
-    (rwl-consistency-test rwl.locks.countdown-semaphore-lock/CSL))
+(deftest CSL-atomic-test
+  (testing "Testing CSL for consistency"
+    (rwl-consistency-test rwl.locks.countdown-semaphore-lock/CSL-atomic))
   (doseq [readers [10 100 1000 10000]
           writers [10 100 1000 10000]]
-    (testing (str "Stress testing CSL with "
+    (testing (str "Stress testing CSL-atomic with "
                   readers " readers and "
                   writers " writers."))
-    (rwl-stress-test rwl.locks.countdown-semaphore-lock/CSL readers writers)))
+    (rwl-stress-test rwl.locks.countdown-semaphore-lock/CSL-atomic readers writers)))
 
-;(deftest CSL-RRWL-test
-;  (testing "Tests validity of CSL using a RRWL"
+;(deftest CSL-atomic-RRWL-test
+;  (testing "Tests validity of CSL-atomic using a RRWL"
 

@@ -1,6 +1,7 @@
 (ns rwl.util
   {:author "Dan Wysocki"}
-  (:import [java.util.concurrent Executors]))
+  (:import [java.util.concurrent Executors]
+           [util.java AArray]))
 
 (defn powers-of
   "Returns an infinite lazy sequence of the powers of n, beginning with start,
@@ -30,7 +31,6 @@
     (true-fn)
     (apply false-fn args)))
 
-
 (defn pool
   "Returns an ExecutorService fixed thread pool"
   [threads]
@@ -46,3 +46,46 @@
       (.get results))
     (.shutdown thread-pool)))
 
+(defn atomic-rwl
+  "Puts an arbitrary piece of data in an Atom, and puts a rwl on it.
+  Returns the rwl interface function.
+  Options
+    :read[]           - derefs the atom
+    :write[func args] - swaps the atom with the result of func applied to it
+                        with args"
+  [rwl x]
+  (let [atomic-x (atom x)
+        read-fn  (fn [] (deref atomic-x))
+        write-fn (fn [func args] (apply swap! atomic-x func args))]
+    (rwl read-fn write-fn)))
+
+(defn array-rwl
+  "Puts a rwl on an array, which can either be provided ready-made, or
+  constructed using the provided parameters.
+  Returns the rwl interface function
+  Options
+    :read[idx & idxs]  - returns the value at the given index(es)
+    :write[idx & idxv] - writes the last item in idxv as the value at the given
+                         index(es)"
+  ([rwl arr]
+     (let [read-fn  (fn [idx & idxs] (apply aget arr idx idxs))
+           write-fn (fn [idx & idxv] (apply aset arr idx idxv))]
+;           write-fn (fn [mode & args]
+;                      (cond
+;                        (= mode :set) (apply aset arr idx idxv)
+;                        (= mode :append) (
+       (rwl read-fn write-fn)))
+  ([rwl type dim & more-dims]
+     (array-rwl rwl (apply make-array type dim more-dims))))
+
+(defn aarray-rwl
+  ""
+  ([rwl ^util.java.AArray arr]
+     (let [read-fn  (fn [idx] (.get arr (int idx)))
+           write-fn (fn [mode & args]
+                      (cond
+                        (= mode :set) (apply #(.set arr %) args)
+                        (= mode :append) (apply #(.append arr %) args)))]
+       (rwl read-fn write-fn)))
+  ([rwl type length]
+     (aarray-rwl rwl (new AArray type (int length)))))

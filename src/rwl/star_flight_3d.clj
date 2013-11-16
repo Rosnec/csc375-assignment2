@@ -11,7 +11,7 @@
   {:author "Dan Wysocki"}
   (:require [incanter core charts stats]
             [rwl.util :as util]
-            [rwl.locks.countdown-semaphore-lock :refer [CSL]]
+            [rwl.locks.countdown-semaphore-lock :refer [CSL-atomic]]
             [rwl.locks.reentrant-rwl :refer [RRWL-atomic]])
   (:import [java.util.concurrent CountDownLatch]))
 
@@ -52,7 +52,7 @@
 (defmacro play-game-throughput-CSL
   "Tests throughput using a countdown-semaphore-lock"
   [num-players read-portion ^java.lang.Long time-ns]
-  `(play-game-throughput num-players read-portion CSL time-ns))
+  `(play-game-throughput num-players read-portion CSL-atomic time-ns))
 
 (defmacro play-game-throughput-RRWL
   "Tests throughput using a countdown-semaphore-lock"
@@ -63,31 +63,43 @@
   "Does a series of throughput tests on both CSL and RRWL, and outputs the
   results as a series of plots."
   ([outdir]
-     (throughput-tests 2 8 0.01))
-  ([outdir start iterations portion-step]
+     (throughput-tests 2 8 1 0.01))
+  ([outdir start iterations times portion-step]
      (println "Doing throughput tests... (this may take a while)")
-     (let [get-throughput (fn [rwl kw num-players]
-                            (for [read-portion (range 0 1 portion-step)]
-                              {:portion read-portion,
-                               :throughput (play-game-throughput num-players
-                                                                 read-portion
-                                                                 rwl
-                                                                 5000000000)
-                               :type kw}))]
+     (let [get-throughput
+           (fn [rwl kw num-players]
+             (for [read-portion (range 0 1 portion-step)]
+               {:portion read-portion,
+                :throughput (incanter.stats/mean
+                              (for [_ (range times)]
+                                (play-game-throughput num-players
+                                                      read-portion
+                                                      rwl
+                                                      5000000000)))
+                :type kw}))]
        (doseq [num-players (util/powers-of 2 start iterations)]
-         (let [throughput (incanter.core/to-dataset
-                            (concat (get-throughput CSL  :CSL  num-players)
-                                    (get-throughput RRWL-atomic :RRWL num-players)))]
+         (let [throughput 
+               (incanter.core/to-dataset
+                 (concat (get-throughput CSL-atomic  "CSL"  num-players)
+                         (get-throughput RRWL-atomic "RRWL" num-players)))]
            (incanter.core/save (incanter.charts/line-chart
                                  :portion  :throughput
                                  :data     throughput
                                  :group-by :type
-                                 :title    (str num-players " players")
+                                 :title    (str num-players " players"
+                                                (if (> times 1)
+                                                  (str " -- average of " times 
+                                                       " runs")
+                                                  ""))
                                  :x-label  "% Readers"
                                  :y-label  "Operations/ms"
                                  :legend   true)
                                (new java.io.File outdir
                                     (str "throughput-"
                                          num-players
-                                         "-players.png")))))
+                                         "-players"
+                                         (if (> times 1)
+                                           (str times "-averaged")
+                                           "")
+                                         ".png")))))
        (println "Done"))))
