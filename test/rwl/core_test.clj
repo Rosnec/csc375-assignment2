@@ -109,11 +109,9 @@
 
 (deftest aarray-test
   (testing "Testing RRWL and CSL on an AArray"
- ;   (doseq [rwl-fn [RRWL-aarray CSL-aarray]]
-      (let [rwl (rwl-fn Integer 1000)]
-        (doseq [threads (powers-of 2 2 9)]
-          (rwl-aarray-test RRWL-aarray 1000 threads)))))
-                         ; rwl-fn -^
+    (doseq [threads (powers-of 2 2 9)]
+      (rwl-aarray-test RRWL-aarray 1000 threads))))
+
 ;(deftest CSL-atomic-RRWL-test
 ;  (testing "Tests validity of CSL-atomic using a RRWL"
 
