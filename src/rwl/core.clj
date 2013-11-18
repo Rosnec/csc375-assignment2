@@ -1,8 +1,8 @@
 (ns rwl.core
   {:author "Dan Wysocki"}
   (:require [rwl.star-flight-3d :refer [throughput-tests]]
-            [rwl.locks.reentrant-rwl :refer [RRWL-aarray]]
-            [rwl.util :refer [dopool]])
+            [rwl.locks.reentrant-rwl :refer [RRWL]]
+            [rwl.util :refer [dopool intarray-rwl]])
   (:import [util.java IntArray])
   (:gen-class))
 
@@ -14,7 +14,14 @@
        (dopool #(.append arr %) data 100)
        (println "data" (apply + data)
                 "arr" (apply + (for [idx data]
-                                 (.get arr idx))))))
+                                 (.get arr idx)))))
+     (let [rrwl (intarray-rwl RRWL 100)
+           data (range 100)]
+       (doseq [idx data]
+         (rrwl :write :set idx idx))
+       (println "data" (apply + data)
+                "arr" (apply + (for [idx data]
+                                 (rrwl :read idx))))))
   ([outdir]
      (throughput-tests outdir 2 9 0.01))
   ([outdir start]

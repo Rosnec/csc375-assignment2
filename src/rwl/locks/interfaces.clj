@@ -11,7 +11,9 @@
 (defn general-rwl
   [^clojure.lang.IFn read-mode
    ^clojure.lang.IFn write-mode]
-  (fn [mode & [func & args]]
-    (cond
-      (= mode :read) (read-mode)
-      (= mode :write) (write-mode func args))))
+  (fn [mode & args]
+    (apply 
+      (cond
+        (= mode :read) read-mode
+        (= mode :write) write-mode)
+      args)))
