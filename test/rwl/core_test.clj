@@ -6,7 +6,6 @@
             [rwl.util :refer [dopool powers-of intarray-rwl]])
   (:import [java.util.concurrent Executors]))
 
-
 (defn rwl-consistency-test
   [lock-fn]
   (let [rwl (lock-fn {})
