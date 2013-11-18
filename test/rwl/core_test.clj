@@ -105,20 +105,20 @@
            (apply +' (for [idx data]
                        (iarr-rwl :read idx)))))))
 
-;; (deftest RRWL-test
-;;   (testing "Testing RRWL"
-;;     (rwl-consistency-test rwl.locks.reentrant-rwl/RRWL-atomic)))
+(deftest RRWL-test
+  (testing "Testing RRWL"
+    (rwl-consistency-test rwl.locks.reentrant-rwl/RRWL-atomic)))
 
-;; (deftest CSL-atomic-test
-;;   (testing "Testing CSL for consistency"
-;;     (rwl-consistency-test rwl.locks.countdown-semaphore-lock/CSL-atomic))
-;;   (doseq [readers [10 100 1000 10000]
-;;           writers [10 100 1000 10000]]
-;;     (testing (str "Stress testing CSL-atomic with "
-;;                   readers " readers and "
-;;                   writers " writers."))
-;;     (rwl-stress-test rwl.locks.countdown-semaphore-lock/CSL-atomic
-;;                      readers writers)))
+(deftest CSL-atomic-test
+  (testing "Testing CSL for consistency"
+    (rwl-consistency-test rwl.locks.countdown-semaphore-lock/CSL-atomic))
+  (doseq [readers [10 100 1000 10000]
+          writers [10 100 1000 10000]]
+    (testing (str "Stress testing CSL-atomic with "
+                  readers " readers and "
+                  writers " writers."))
+    (rwl-stress-test rwl.locks.countdown-semaphore-lock/CSL-atomic
+                     readers writers)))
 
 (deftest intarray-test
   (testing "Testing RRWL and CSL on an AArray"
