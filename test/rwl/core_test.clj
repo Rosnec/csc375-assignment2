@@ -99,9 +99,9 @@
   (apply + (range length))."
   [rwl length threads]
   (let [iarr-rwl (intarray-rwl rwl length)
-        data (partition-all (/ length threads) (range length))]
+        data (range length)]
     (println "gonna pool dis shit son")
-    (dopool #((doseq [x %] (iarr-rwl :write :append x))) data threads)
+    (dopool #(iarr-rwl :write :append x) data threads)
     (println "pool's closed")
     (is (= (apply +' data)
            (apply +' (for [idx data]
