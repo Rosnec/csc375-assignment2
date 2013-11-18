@@ -100,9 +100,7 @@
   [rwl length threads]
   (let [iarr-rwl (intarray-rwl rwl length)
         data (range length)]
-    (println "gonna pool dis shit son")
     (dopool #(iarr-rwl :write :append %) data threads)
-    (println "pool's closed")
     (is (= (apply +' data)
            (apply +' (for [idx data]
                        (iarr-rwl :read idx)))))))
@@ -125,8 +123,8 @@
 (deftest intarray-test
   (testing "Testing RRWL and CSL on an AArray"
     (doseq [rwl [CSL RRWL]]
-      (doseq [threads (powers-of 2 2 5)]
-        (rwl-intarray-test rwl 2 threads)))))
+      (doseq [threads (powers-of 2 2 9)]
+        (rwl-intarray-test rwl 1000 threads)))))
 
 ;(deftest CSL-atomic-RRWL-test
 ;  (testing "Tests validity of CSL-atomic using a RRWL"
