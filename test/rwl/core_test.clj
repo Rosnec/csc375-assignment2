@@ -1,9 +1,9 @@
 (ns rwl.core-test
   {:author "Dan Wysocki"}
   (:use clojure.test)
-  (:require [rwl.locks.reentrant-rwl :refer [RRWL-atomic RRWL-aarray]]
-            [rwl.locks.countdown-semaphore-lock :refer [CSL-atomic CSL-aarray]]
-            [rwl.util :refer [dopool powers-of]])
+  (:require [rwl.locks.reentrant-rwl :refer [RRWL-atomic RRWL]]
+            [rwl.locks.countdown-semaphore-lock :refer [CSL-atomic CSL]]
+            [rwl.util :refer [dopool powers-of intarray-rwl]])
   (:import [java.util.concurrent Executors]))
 
 ;; (deftest orl-test
@@ -92,25 +92,39 @@
            (apply +' (for [idx data]
                        (rwl :read idx)))))))
 
-(deftest RRWL-test
-  (testing "Testing RRWL"
-    (rwl-consistency-test rwl.locks.reentrant-rwl/RRWL-atomic)))
+(defn rwl-intarray-test
+  "Tries filling an array of length N with (range N) by appending the values
+  concurrently. The order is not necessarily preserved, but the elements should
+  be, so to test it, we sum the elements, and see if it is equal to
+  (apply + (range length))."
+  [rwl length threads]
+  (let [iarr-rwl (intarray-rwl rwl length)
+        data (range length)]
+    (dopool #(iarr-rwl :write :append %) data threads)
+    (is (= (apply +' data)
+           (apply +' (for [idx data]
+                       (iarr-rwl :read idx)))))))
 
-(deftest CSL-atomic-test
-  (testing "Testing CSL for consistency"
-    (rwl-consistency-test rwl.locks.countdown-semaphore-lock/CSL-atomic))
-  (doseq [readers [10 100 1000 10000]
-          writers [10 100 1000 10000]]
-    (testing (str "Stress testing CSL-atomic with "
-                  readers " readers and "
-                  writers " writers."))
-    (rwl-stress-test rwl.locks.countdown-semaphore-lock/CSL-atomic
-                     readers writers)))
+;; (deftest RRWL-test
+;;   (testing "Testing RRWL"
+;;     (rwl-consistency-test rwl.locks.reentrant-rwl/RRWL-atomic)))
 
-(deftest aarray-test
+;; (deftest CSL-atomic-test
+;;   (testing "Testing CSL for consistency"
+;;     (rwl-consistency-test rwl.locks.countdown-semaphore-lock/CSL-atomic))
+;;   (doseq [readers [10 100 1000 10000]
+;;           writers [10 100 1000 10000]]
+;;     (testing (str "Stress testing CSL-atomic with "
+;;                   readers " readers and "
+;;                   writers " writers."))
+;;     (rwl-stress-test rwl.locks.countdown-semaphore-lock/CSL-atomic
+;;                      readers writers)))
+
+(deftest intarray-test
   (testing "Testing RRWL and CSL on an AArray"
-    (doseq [threads (powers-of 2 2 9)]
-      (rwl-aarray-test RRWL-aarray 1000 threads))))
+    (doseq [rwl [CSL RRWL]]
+      (doseq [threads (powers-of 2 2 9)]
+        (rwl-intarray-test rwl 500 threads)))))
 
 ;(deftest CSL-atomic-RRWL-test
 ;  (testing "Tests validity of CSL-atomic using a RRWL"

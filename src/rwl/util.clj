@@ -1,7 +1,8 @@
 (ns rwl.util
   {:author "Dan Wysocki"}
   (:import [java.util.concurrent Executors]
-           [util.java AArray]))
+           [util.java AArray]
+           [util.java IntArray]))
 
 (defn powers-of
   "Returns an infinite lazy sequence of the powers of n, beginning with start,
@@ -89,3 +90,14 @@
        (rwl read-fn write-fn)))
   ([rwl type length]
      (aarray-rwl rwl (new AArray type (int length)))))
+
+(defn intarray-rwl
+  ""
+  [rwl ^java.lang.Integer length]
+  (let [arr (new IntArray length)
+        read-fn  (fn [idx] (.get arr (int idx)))
+        write-fn (fn [mode & args]
+                   (cond
+                     (= mode :set) (apply #(.set arr %) args)
+                     (= mode :append) (apply #(.append arr %) args)))]
+    (rwl read-fn write-fn)))
