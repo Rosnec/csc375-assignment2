@@ -101,7 +101,7 @@
   (let [iarr-rwl (intarray-rwl rwl length)
         data (range length)]
     (println "gonna pool dis shit son")
-    (dopool #(iarr-rwl :write :append x) data threads)
+    (dopool #(iarr-rwl :write :append %) data threads)
     (println "pool's closed")
     (is (= (apply +' data)
            (apply +' (for [idx data]
