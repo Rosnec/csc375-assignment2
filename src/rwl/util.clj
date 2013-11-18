@@ -96,7 +96,7 @@
   [rwl ^java.lang.Integer length]
   (let [arr (new IntArray length)
         read-mode (fn [idx] (.get arr (int idx)))
-        write-mode (fn [mode args]
+        write-mode (fn [mode & args]
                      (cond
                        (= mode :set)    (apply #(.set arr % %2) args)
                        (= mode :append) (apply #(.append arr %) args)))]

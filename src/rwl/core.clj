@@ -15,8 +15,8 @@
        (println "data" (apply + data)
                 "arr" (apply + (for [idx data]
                                  (.get arr idx)))))
-     (let [rrwl (intarray-rwl RRWL 100)
-           data (range 100)]
+     (let [rrwl (intarray-rwl RRWL 10000)
+           data (range 10000)]
        (doseq [idx data]
          (rrwl :write :set idx idx))
        (println "data" (apply + data)
