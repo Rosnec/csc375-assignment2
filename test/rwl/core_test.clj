@@ -126,7 +126,7 @@
   (testing "Testing RRWL and CSL on an AArray"
     (doseq [rwl [CSL RRWL]]
       (doseq [threads (powers-of 2 2 5)]
-        (rwl-intarray-test rwl 50 threads)))))
+        (rwl-intarray-test rwl 2 threads)))))
 
 ;(deftest CSL-atomic-RRWL-test
 ;  (testing "Tests validity of CSL-atomic using a RRWL"
