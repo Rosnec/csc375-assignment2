@@ -13,17 +13,17 @@
      (let [arr (new IntArray 1000)
            data (range 1000)]
        (dopool #(.append arr %) data 100)
-       (println "data" (apply + data)
-                "arr" (apply + (for [idx data]
-                                 (.get arr idx)))))
+       (println "No rwl: expected" (apply + data)
+                "actual"           (apply + (for [idx data]
+                                              (.get arr idx)))))
      (doseq [rwl [RRWL CSL]]
        (let [rrwl (intarray-rwl rwl 10000)
              data (range 10000)]
          (doseq [idx data]
            (rrwl :write :set idx idx))
-         (println "data" (apply + data)
-                  "arr"  (apply + (for [idx data]
-                                    (rrwl :read idx)))))))
+         (println "With rwl: expected" (apply + data)
+                  "actual"             (apply + (for [idx data]
+                                                  (rrwl :read idx)))))))
   ([outdir]
      (throughput-tests outdir 2 9 0.01))
   ([outdir start]

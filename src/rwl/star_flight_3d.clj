@@ -6,8 +6,12 @@
   map. In this performance test, we compare two different readers-writer locks'
   performance. To focus our measurements only on lock performance, we disable
   collision detection, and so threads simply move their player, or take a
-  snapshot of the map at a given time. The percentage of the time that each
-  event happens is fixed for a full set of tests, and then incremented."
+  snapshot of the map at a given time. The ships are outfitted with Finite
+  Improbability Drives, which means that each time they move, they wind up
+  no more than 100 units along any axis away from the origin (reduces overhead
+  associated with incrementing the current position).  The percentage of the
+  time that each event happens is fixed for a full set of tests, and then
+  incremented."
   {:author "Dan Wysocki"}
   (:require [incanter core charts stats]
             [rwl.util :as util]
