@@ -79,19 +79,6 @@
     (await counter)
     (is (= @counter writers))))
 
-(defn rwl-aarray-test
-  "Tries filling an array of length N with (range N) by appending the values
-  concurrently. The order is not necessarily preserved, but the elements should
-  be, so to test it, we sum the elements, and see if it is equal to
-  (apply + (range length))."
-  [aarr-rwl length threads]
-  (let [rwl (aarr-rwl Integer length)
-        data (range length)]
-    (dopool #(rwl :write :append %) data threads)
-    (is (= (apply +' data)
-           (apply +' (for [idx data]
-                       (rwl :read idx)))))))
-
 (defn rwl-intarray-test
   "Tries filling an array of length N with (range N) by appending the values
   concurrently. The order is not necessarily preserved, but the elements should
@@ -124,7 +111,7 @@
   (testing "Testing RRWL and CSL on an AArray"
     (doseq [rwl [CSL RRWL]]
       (doseq [threads (powers-of 2 2 9)]
-        (rwl-intarray-test rwl 1000 threads)))))
+        (rwl-intarray-test rwl 10000 threads)))))
 
 ;(deftest CSL-atomic-RRWL-test
 ;  (testing "Tests validity of CSL-atomic using a RRWL"

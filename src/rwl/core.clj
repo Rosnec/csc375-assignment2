@@ -2,6 +2,7 @@
   {:author "Dan Wysocki"}
   (:require [rwl.star-flight-3d :refer [throughput-tests]]
             [rwl.locks.reentrant-rwl :refer [RRWL]]
+            [rwl.locks.countdown-semaphore-lock :refer [CSL]]
             [rwl.util :refer [dopool intarray-rwl]])
   (:import [util.java IntArray])
   (:gen-class))
@@ -15,13 +16,14 @@
        (println "data" (apply + data)
                 "arr" (apply + (for [idx data]
                                  (.get arr idx)))))
-     (let [rrwl (intarray-rwl RRWL 10000)
-           data (range 10000)]
-       (doseq [idx data]
-         (rrwl :write :set idx idx))
-       (println "data" (apply + data)
-                "arr" (apply + (for [idx data]
-                                 (rrwl :read idx))))))
+     (doseq [rwl [RRWL CSL]]
+       (let [rrwl (intarray-rwl rwl 10000)
+             data (range 10000)]
+         (doseq [idx data]
+           (rrwl :write :set idx idx))
+         (println "data" (apply + data)
+                  "arr"  (apply + (for [idx data]
+                                    (rrwl :read idx)))))))
   ([outdir]
      (throughput-tests outdir 2 9 0.01))
   ([outdir start]

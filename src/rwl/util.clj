@@ -57,7 +57,7 @@
   [rwl x]
   (let [atomic-x (atom x)
         read-fn  (fn [] (deref atomic-x))
-        write-fn (fn [func args] (apply swap! atomic-x func args))]
+        write-fn (fn [func & args] (apply swap! atomic-x func args))]
     (rwl read-fn write-fn)))
 
 (defn array-rwl
